@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARKHİV — Giriş</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink:         #111010;
+            --deep:        #0D0C0C;
+            --card:        #161314;
+            --border:      #2E2224;
+            --border-soft: rgba(58,44,46,0.4);
+            --crimson:     #9B4651;
+            --crimson-dim: #7D3840;
+            --ash:         #A8A49E;
+            --parchment:   #E8E3DC;
+        }
+
+        body {
+            background: var(--deep);
+            color: var(--parchment);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── SOL PANEL ─── */
+        .sol-panel {
+            width: 44%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3.5rem;
+            overflow: hidden;
+            animation: fromLeft 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* Grid dokusu */
+        .sol-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg,   transparent, transparent 59px, rgba(58,44,46,0.2) 60px),
+                repeating-linear-gradient(90deg,  transparent, transparent 59px, rgba(58,44,46,0.2) 60px);
+            pointer-events: none;
+        }
+
+        /* Sağ kenar gradyan çizgi */
+        .sol-panel::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 0;
+            width: 1px; height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, var(--crimson-dim) 25%, var(--crimson-dim) 75%, transparent 100%);
+        }
+
+        .logo-alan {
+            position: relative;
+            z-index: 1;
+            animation: fromLeft 1s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: 0.45em;
+            color: var(--crimson);
+            display: block;
+        }
+
+        .logo-altyazi {
+            display: block;
+            margin-top: 0.4rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--ash);
+            opacity: 0.6;
+        }
+
+        .dekor-alan {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Arka plan dev rakam */
+        .buyuk-sayi {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(9rem, 14vw, 15rem);
+            font-weight: 300;
+            color: rgba(155, 70, 81, 0.06);
+            line-height: 1;
+            user-select: none;
+            position: absolute;
+            right: -0.5rem;
+            bottom: -1rem;
+        }
+
+        .alinti-kutu {
+            position: relative;
+            max-width: 290px;
+            animation: fromLeft 1s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .tirnak {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.5rem;
+            line-height: 0;
+            color: var(--crimson-dim);
+            position: absolute;
+            top: 1.2rem;
+            left: -1.2rem;
+            opacity: 0.55;
+        }
+
+        .alinti-metin {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.65;
+            color: var(--parchment);
+            opacity: 0.65;
+        }
+
+        .alinti-kaynak {
+            display: block;
+            margin-top: 1.2rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--crimson);
+            font-style: normal;
+        }
+
+        .alt-alan {
+            position: relative;
+            z-index: 1;
+            animation: fromLeft 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .alt-alan span {
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            color: var(--ash);
+            text-transform: uppercase;
+            opacity: 0.35;
+        }
+
+        /* ─── SAĞ PANEL ─── */
+        .sag-panel {
+            width: 56%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3.5rem;
+            position: relative;
+            z-index: 1;
+            animation: fromRight 1s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .form-sarici {
+            width: 100%;
+            max-width: 360px;
+            position: relative;
+        }
+
+        /* Köşe süsleri */
+        .kose {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+        }
+        .kose-sol-ust { top: -14px; left: -14px; border-top: 1px solid var(--crimson-dim); border-left: 1px solid var(--crimson-dim); }
+        .kose-sag-ust { top: -14px; right: -14px; border-top: 1px solid var(--crimson-dim); border-right: 1px solid var(--crimson-dim); }
+        .kose-sol-alt { bottom: -14px; left: -14px; border-bottom: 1px solid var(--crimson-dim); border-left: 1px solid var(--crimson-dim); }
+        .kose-sag-alt { bottom: -14px; right: -14px; border-bottom: 1px solid var(--crimson-dim); border-right: 1px solid var(--crimson-dim); }
+
+        .form-baslik {
+            margin-bottom: 2.8rem;
+            animation: asagiDen 0.9s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .form-baslik h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .form-cizgi {
+            width: 36px;
+            height: 1px;
+            background: var(--crimson);
+            margin: 0.75rem 0 0.85rem;
+        }
+
+        .form-baslik p {
+            font-size: 0.73rem;
+            color: var(--ash);
+            letter-spacing: 0.04em;
+            line-height: 1.55;
+        }
+
+        /* Hata kutusu */
+        .hata-kutu {
+            display: none;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(155, 70, 81, 0.08);
+            border: 1px solid rgba(155, 70, 81, 0.25);
+            border-left: 2px solid var(--crimson);
+            font-size: 0.7rem;
+            color: var(--crimson);
+            letter-spacing: 0.04em;
+            animation: salla 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+        }
+
+        /* Form alanları */
+        .alan {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .alan:nth-of-type(1) { animation: asagiDen 0.9s 0.52s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .alan:nth-of-type(2) { animation: asagiDen 0.9s 0.62s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+        .alan label {
+            position: absolute;
+            top: 0.85rem;
+            left: 0;
+            font-size: 0.68rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--ash);
+            pointer-events: none;
+            transition: top 0.25s ease, font-size 0.25s ease, color 0.25s ease, letter-spacing 0.25s ease;
+        }
+
+        .alan input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 0 0.55rem;
+            color: var(--parchment);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.25s ease;
+        }
+
+        .alan input::placeholder { color: transparent; }
+
+        .alan input:focus,
+        .alan input:not(:placeholder-shown) {
+            border-bottom-color: var(--crimson);
+        }
+
+        .alan input:focus ~ label,
+        .alan input:not(:placeholder-shown) ~ label {
+            top: -0.9rem;
+            font-size: 0.52rem;
+            color: var(--crimson);
+            letter-spacing: 0.3em;
+        }
+
+        /* Kırmızı kayma çizgisi */
+        .kayma-cizgi {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 1px;
+            background: var(--crimson);
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .alan input:focus ~ .kayma-cizgi { width: 100%; }
+
+        /* Giriş butonu */
+        .girs-btn {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid var(--crimson-dim);
+            color: var(--crimson);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.35s ease, border-color 0.35s ease;
+            margin-top: 0.4rem;
+            animation: asagiDen 0.9s 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .girs-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--crimson-dim);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .girs-btn:hover::before { transform: scaleX(1); }
+        .girs-btn:hover { color: var(--parchment); border-color: var(--crimson); }
+
+        .girs-btn span { position: relative; z-index: 1; }
+
+        /* Alt link */
+        .geri-link {
+            display: block;
+            text-align: center;
+            margin-top: 2.2rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--ash);
+            text-decoration: none;
+            opacity: 0.45;
+            transition: opacity 0.2s ease;
+            animation: asagiDen 0.9s 0.82s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .geri-link:hover { opacity: 1; }
+
+        /* ─── ANİMASYONLAR ─── */
+        @keyframes fromLeft {
+            from { opacity: 0; transform: translateX(-24px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fromRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes asagiDen {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes salla {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-6px); }
+            40%       { transform: translateX(6px); }
+            60%       { transform: translateX(-4px); }
+            80%       { transform: translateX(4px); }
+        }
+
+        /* ─── MOBİL ─── */
+        @media (max-width: 700px) {
+            body { flex-direction: column; overflow: auto; }
+            .sol-panel { width: 100%; min-height: 38vh; border-right: none; border-bottom: 1px solid var(--border); }
+            .sag-panel { width: 100%; }
+            .buyuk-sayi { font-size: 8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sol dekoratif panel -->
+    <aside class="sol-panel">
+        <div class="logo-alan">
+            <span class="logo">ARKHİV</span>
+            <span class="logo-altyazi">Kütüphane Yönetim Sistemi</span>
+        </div>
+
+        <div class="dekor-alan">
+            <div class="buyuk-sayi">I</div>
+            <div class="alinti-kutu">
+                <span class="tirnak">"</span>
+                <p class="alinti-metin">Bir kütüphane sonsuz bir bahçedir; her kitap açılmayı bekleyen bir kapıdır.</p>
+                <cite class="alinti-kaynak">— Arşiv Notları, 1847</cite>
+            </div>
+        </div>
+
+        <div class="alt-alan">
+            <span>© 2026 ARKHİV — Tüm hakları saklıdır</span>
+        </div>
+    </aside>
+
+    <!-- Sağ giriş paneli -->
+    <main class="sag-panel">
+        <div class="form-sarici">
+
+            <!-- Köşe süsleri -->
+            <div class="kose kose-sol-ust"></div>
+            <div class="kose kose-sag-ust"></div>
+            <div class="kose kose-sol-alt"></div>
+            <div class="kose kose-sag-alt"></div>
+
+            <div class="form-baslik">
+                <h1>Sisteme Giriş</h1>
+                <div class="form-cizgi"></div>
+                <p>ARKHİV yönetim paneline erişmek için<br>ad ve şifreni gir.</p>
+            </div>
+
+            <div class="hata-kutu" id="hataKutu"></div>
+
+            <form id="girisForm" onsubmit="girisYap(event)">
+
+                <div class="alan">
+                    <input type="text" id="kullaniciAdi" placeholder=" " autocomplete="name" required />
+                    <label for="kullaniciAdi">Adınız</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan">
+                    <input type="password" id="sifre" placeholder=" " autocomplete="current-password" required />
+                    <label for="sifre">Şifre</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <button type="submit" class="girs-btn">
+                    <span>Arşive Gir →</span>
+                </button>
+
+            </form>
+
+            <a href="/" class="geri-link">← Genel Kataloğa Dön</a>
+        </div>
+    </main>
+
+    <script>
+        async function girisYap(e) {
+            e.preventDefault();
+            const ad = document.getElementById('kullaniciAdi').value.trim();
+            const sifre = document.getElementById('sifre').value;
+            const hata = document.getElementById('hataKutu');
+            const btn = document.querySelector('.girs-btn');
+
+            hata.style.display = 'none';
+
+            // Butonu devre dışı bırak → Kullanıcı form uğurlarken tekrar gönderemesin
+            // (double submit sorunu: ağ yavaşsa kullanıcı butona 2 kez basabilir, aynı ad iki kez DB'ye gidebilirdi)
+            btn.disabled = true;
+            btn.querySelector('span').textContent = 'Doğrulanıyor...';
+
+            try {
+                // async/await: fetch normalde Promise döndürür, await ile cevap gelene kadar bekleriz
+                // await olmadan r hemen tanımlanır ama içi boş olur (Promise henzüz tamamlanmamış)
+                const r = await fetch('/giris/dogrula', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ad, sifre })  // hem ad hem şifre gönder
+                });
+                const veri = await r.json();
+
+                // r.ok → HTTP durum kodu 200-299 arasındaysa true döner
+                // 401, 404 gibi hata kodlarında false olur ama catch'e düşmez!
+                // (catch yalnızca ağ kopması/sunucu çökmesi gibi durumlarda çalışır)
+                if (r.ok) {
+                    window.location.href = '/';
+                } else {
+                    // FastAPI'nin döndürdüğü hata mesajı: { "detail": "Bu isimde akıtif bir üye bulunamadı" }
+                    // .detail yoksa genıel bir mesaj göster
+                    hata.textContent = veri.detail || 'Giriş başarısız.';
+                    hata.style.display = 'block';
+                    document.getElementById('kullaniciAdi').focus();
+                }
+            } catch {
+                // Buraya sadece ağ hatası veya sunucu tamamen çöktüyse düşülir
+                // 401/404 gibi HTTP hata kodları buraya gelmez, yukarıdaki else'e gider
+                hata.textContent = 'Sunucuya ulaşılamadı.';
+                hata.style.display = 'block';
+            } finally {
+                // try veya catch hangi dal çalışırsa çalışsın, finally her zaman çalışır
+                // Butonu mutlaka tekrar aktif et → hata olsa da olmasa da
+                btn.disabled = false;
+                btn.querySelector('span').textContent = 'Arşive Gir →';
+            }
+        }
+    </script>
+
+</body>
+</html>

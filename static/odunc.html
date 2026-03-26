@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARKHİV — Ödünç İşlemleri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #111010;
+            color: #E8E3DC;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1A1415;
+            border-bottom: 1px solid #3A2C2E;
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: #9B4651;
+        }
+
+        .logo-alt {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: #A8A49E;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+        }
+
+        .geri-btn {
+            background: transparent;
+            border: 1px solid #3D1D21;
+            color: #A8A49E;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            padding: 0.45rem 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .geri-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #7D3840;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .geri-btn:hover::before { transform: scaleX(1); }
+        .geri-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .geri-btn span { position: relative; z-index: 1; }
+
+        /* ─── LAYOUT ─── */
+        main {
+            max-width: 1100px;
+            margin: 3.5rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* ─── SOL: FORM ─── */
+        .sol { animation: asagiDen 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+
+        .bolum-baslik {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+        }
+
+        .bolum-cizgi {
+            width: 36px;
+            height: 2px;
+            background: #7D3840;
+            margin-bottom: 0.6rem;
+        }
+
+        .bolum-alt {
+            font-size: 0.7rem;
+            color: #A8A49E;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-kart {
+            background: #161314;
+            border: 1px solid #2E2224;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .form-kart::before {
+            content: '';
+            position: absolute;
+            top: -1px; right: -1px;
+            width: 16px; height: 16px;
+            border-top: 2px solid #7D3840;
+            border-right: 2px solid #7D3840;
+        }
+        .form-kart::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: -1px;
+            width: 16px; height: 16px;
+            border-bottom: 2px solid #7D3840;
+            border-left: 2px solid #7D3840;
+        }
+
+        /* ─── SELECT ALANLARI ─── */
+        .alan {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .alan label {
+            display: block;
+            font-size: 0.58rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #9B4651;
+            margin-bottom: 0.55rem;
+        }
+
+        .alan select {
+            width: 100%;
+            background: #111010;
+            border: 1px solid #2E2224;
+            border-bottom: 1px solid #3A2C2E;
+            color: #E8E3DC;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            padding: 0.7rem 0.8rem;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            transition: border-color 0.25s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239B4651'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            padding-right: 2rem;
+        }
+
+        .alan select:focus { border-color: #9B4651; }
+        .alan select option { background: #1A1415; }
+
+        /* ─── MESAJLAR ─── */
+        .mesaj {
+            display: none;
+            padding: 0.75rem 0.9rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.68rem;
+            letter-spacing: 0.04em;
+            border-left: 2px solid;
+            line-height: 1.5;
+        }
+        .mesaj.hata   { background: rgba(155,70,81,0.08); border-color: #9B4651; color: #C0504D; }
+        .mesaj.basari { background: rgba(90,130,90,0.08); border-color: #5A825A; color: #7AB87A; }
+
+        /* ─── BUTON ─── */
+        .kaydet-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: transparent;
+            border: 1px solid #7D3840;
+            color: #9B4651;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.35s ease, border-color 0.35s ease;
+        }
+        .kaydet-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #7D3840;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .kaydet-btn:hover::before { transform: scaleX(1); }
+        .kaydet-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .kaydet-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .kaydet-btn span { position: relative; z-index: 1; }
+
+        /* ─── SAĞ: AKTİF ÖDÜNÇLER TABLOSU ─── */
+        .sag { animation: asagiDen 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+
+        .tablo-baslik-satir {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+
+        .sayac {
+            font-size: 0.58rem;
+            letter-spacing: 0.15em;
+            color: #A8A49E;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        thead tr { border-bottom: 1px solid #3A2C2E; }
+
+        th {
+            text-align: left;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #A8A49E;
+            font-weight: 400;
+        }
+
+        td {
+            padding: 0.9rem 0.9rem;
+            border-bottom: 1px solid rgba(58,44,46,0.4);
+            color: #E8E3DC;
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: rgba(125,56,64,0.05); }
+
+        .iade-btn {
+            background: transparent;
+            border: 1px solid #3D1D21;
+            color: #A8A49E;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.7rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.25s ease, border-color 0.25s ease;
+            white-space: nowrap;
+        }
+        .iade-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #3D1D21;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .iade-btn:hover::before { transform: scaleX(1); }
+        .iade-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .iade-btn span { position: relative; z-index: 1; }
+
+        .tarih {
+            font-size: 0.75rem;
+            color: #A8A49E;
+        }
+
+        #bos-mesaj {
+            text-align: center;
+            padding: 3rem;
+            font-size: 0.75rem;
+            color: #A8A49E;
+            letter-spacing: 0.08em;
+            display: none;
+        }
+
+        #tablo-yukleniyor {
+            text-align: center;
+            padding: 3rem;
+            font-size: 0.75rem;
+            color: #A8A49E;
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes asagiDen {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes salla {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+
+        @media (max-width: 800px) {
+            main { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo">ARKHİV</div>
+        <div class="logo-alt">Kütüphane Yönetim Sistemi</div>
+    </div>
+    <a href="/" class="geri-btn"><span>&#x2190; Koleksiyona Dön</span></a>
+</header>
+
+<main>
+
+    <!-- SOL: ÖDÜNÇ VERME FORMU -->
+    <div class="sol">
+        <h2 class="bolum-baslik">Kitap Ödünç Ver</h2>
+        <div class="bolum-cizgi"></div>
+        <p class="bolum-alt">Üyeden kitap ve üye seç, kaydet.</p>
+
+        <div class="form-kart">
+            <div class="mesaj hata"   id="hataMesaj"></div>
+            <div class="mesaj basari" id="basariMesaj"></div>
+
+            <form id="oduncForm" onsubmit="oduncVer(event)">
+
+                <div class="alan">
+                    <label for="kitapSec">Kitap</label>
+                    <!-- Kitaplar API'den /kitaplar/ endpoint'inden çekilir -->
+                    <select id="kitapSec" required>
+                        <option value="">— seçiniz —</option>
+                    </select>
+                </div>
+
+                <div class="alan">
+                    <label for="uyeSec">Üye</label>
+                    <!-- Üyeler API'den /uyeler/ endpoint'inden çekilir -->
+                    <select id="uyeSec" required>
+                        <option value="">— seçiniz —</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="kaydet-btn" id="kaydetBtn">
+                    <span>Ödünç Ver →</span>
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- SAĞ: AKTİF ÖDÜNÇLER -->
+    <div class="sag">
+        <div class="tablo-baslik-satir">
+            <h2 class="bolum-baslik">Aktif Ödünçler</h2>
+            <span class="sayac" id="sayac"></span>
+        </div>
+        <div class="bolum-cizgi"></div>
+
+        <div id="tablo-yukleniyor">Yükleniyor…</div>
+        <div id="bos-mesaj">Şu an ödünçte kitap yok.</div>
+
+        <table id="odunc-tablosu" style="display:none">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Kitap</th>
+                    <th>Üye</th>
+                    <th>Ödünç Tarihi</th>
+                    <th>İade</th>
+                </tr>
+            </thead>
+            <tbody id="tablo-govde"></tbody>
+        </table>
+    </div>
+
+</main>
+
+<script>
+
+    // ── YARDIMCI: Kitap ve üye isimlerini ID'ye göre bulmak için ─────────────
+    // Dropdown'lardan seçilen ID yerine isim göstermek için bu map'leri kullanırız
+    const kitapMap = {};  // { 1: "Suç ve Ceza", 2: "... }
+    const uyeMap   = {};  // { 2: "Kaan Kaya", ... }
+
+
+    // ── SAYFA AÇILINCA: Dropdown'ları ve Tabloyu Doldur ──────────────────────
+    // Promise.all → birden fazla fetch isteğini paralel atar
+    // İki ayrı fetch().then().then() yapsaydık, biri bitmeden diğeri başlamazdı
+    // Promise.all ile ikisi aynı anda başlar, ikisi de bitince [kitaplar, uyeler] olarak gelir
+    // Destructuring: .then(function([kitaplar, uyeler])) → dizi içinden direkt değişkene al
+    Promise.all([
+        fetch('/kitaplar/').then(r => r.json()),
+        fetch('/uyeler/').then(r => r.json())
+    ]).then(function([kitaplar, uyeler]) {
+
+        const kitapSec = document.getElementById('kitapSec');
+        const uyeSec   = document.getElementById('uyeSec');
+
+        // Kitapları dropdown'a ekle
+        // Sadece adedi > 0 olanlar seçilebilir (stokta yok ise disabled)
+        kitaplar.forEach(function(k) {
+            kitapMap[k.id] = k.baslik;  // ID → isim map'e kaydet
+            const opt = document.createElement('option');
+            opt.value = k.id;
+            opt.textContent = k.baslik + ' — ' + k.yazar + '  (adet: ' + k.adet + ')';
+            if (k.adet < 1) opt.disabled = true;  // stok yoksa seçilemez
+            kitapSec.appendChild(opt);
+        });
+
+        // Üyeleri dropdown'a ekle
+        // Sadece aktif üyeler seçilebilir
+        uyeler.forEach(function(u) {
+            uyeMap[u.id] = u.ad + ' ' + u.soyad;  // ID → isim map'e kaydet
+            const opt = document.createElement('option');
+            opt.value = u.id;
+            opt.textContent = u.ad + ' ' + u.soyad;
+            if (!u.aktif) opt.disabled = true;  // pasif üye seçilemez
+            uyeSec.appendChild(opt);
+        });
+
+    });
+
+    // Sayfa açılınca aktif ödünçleri de getir
+    aktifOduncleriYukle();
+
+
+    // ── AKTİF ÖDÜNÇLERİ TABLOYA YAZ ─────────────────────────────────────────
+    function aktifOduncleriYukle() {
+
+        // GET /odunc/aktif → iade_edildi == False olanları getirir
+        fetch('/odunc/aktif')
+            .then(r => r.json())
+            .then(function(islemler) {
+
+                document.getElementById('tablo-yukleniyor').style.display = 'none';
+
+                // Kayıt yoksa bilgi mesajı göster
+                if (islemler.length === 0) {
+                    document.getElementById('bos-mesaj').style.display = 'block';
+                    return;
+                }
+
+                // Kayıt sayısını göster
+                document.getElementById('sayac').textContent = islemler.length + ' aktif kayıt';
+                document.getElementById('odunc-tablosu').style.display = 'table';
+
+                const govde = document.getElementById('tablo-govde');
+                govde.innerHTML = '';  // Her yüklemede tabloyu temizle
+
+                islemler.forEach(function(islem) {
+
+                    // kitapMap ve uyeMap'ten ID yerine isim göster
+                    const kitapAdi = kitapMap[islem.kitap_id] || 'Kitap #' + islem.kitap_id;
+                    const uyeAdi   = uyeMap[islem.uye_id]     || 'Üye #' + islem.uye_id;
+
+                    const tr = document.createElement('tr');
+                    // Her satıra benzersiz id attrıbüt koy
+                    // İade butonuna basıldığında document.getElementById('satir-3') ile bu satırı bulup sileriz
+                    // Yoksa hangi satırı sileceğimizi bilemezdik
+                    tr.id = 'satir-' + islem.id;
+                    tr.innerHTML =
+                        '<td>' + islem.id + '</td>' +
+                        '<td>' + kitapAdi + '</td>' +
+                        '<td>' + uyeAdi + '</td>' +
+                        '<td class="tarih">' + islem.odunc_tarihi + '</td>' +
+                        '<td><button class="iade-btn" onclick="iadeAl(' + islem.id + ', this)">' +
+                            '<span>İade Al</span>' +
+                        '</button></td>';
+                    govde.appendChild(tr);
+                });
+            });
+    }
+
+
+    // ── ÖDÜNÇ VER ─────────────────────────────────────────────────────────────
+    async function oduncVer(e) {
+        e.preventDefault();
+
+        const hata   = document.getElementById('hataMesaj');
+        const basari = document.getElementById('basariMesaj');
+        const btn    = document.getElementById('kaydetBtn');
+
+        hata.style.display   = 'none';
+        basari.style.display = 'none';
+        btn.disabled = true;
+        btn.querySelector('span').textContent = 'Kaydediliyor...';
+
+        const veri = {
+            kitap_id: parseInt(document.getElementById('kitapSec').value),
+            uye_id:   parseInt(document.getElementById('uyeSec').value)
+        };
+
+        try {
+            // POST /odunc/ → yeni ödünç kaydı oluşturur, kitabın adetini 1 azaltır
+            const r = await fetch('/odunc/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(veri)
+            });
+
+            const sonuc = await r.json();
+
+            if (r.ok) {
+                const kitapAdi = kitapMap[sonuc.kitap_id] || 'Kitap #' + sonuc.kitap_id;
+                const uyeAdi   = uyeMap[sonuc.uye_id]    || 'Üye #' + sonuc.uye_id;
+                basari.textContent = '"' + kitapAdi + '" → ' + uyeAdi + ' üzerine kaydedildi.';
+                basari.style.display = 'block';
+
+                // Formu sıfırla
+                document.getElementById('oduncForm').reset();
+
+                // Aktif ödünç tablosunu yenile
+                document.getElementById('odunc-tablosu').style.display = 'none';
+                document.getElementById('tablo-yukleniyor').style.display = 'block';
+                aktifOduncleriYukle();
+
+            } else {
+                hata.textContent = sonuc.detail || 'İşlem başarısız.';
+                hata.style.display = 'block';
+                hata.style.animation = 'none';
+                void hata.offsetWidth;
+                hata.style.animation = 'salla 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
+            }
+
+        } catch {
+            hata.textContent = 'Sunucuya ulaşılamadı.';
+            hata.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'Ödünç Ver →';
+        }
+    }
+
+
+    // ── İADE AL ───────────────────────────────────────────────────────────────
+    async function iadeAl(islemId, btn) {
+
+        btn.disabled = true;
+        btn.querySelector('span').textContent = '...';
+
+        // PATCH /odunc/{id}/iade → iade_edildi=True yapar, kitap adetini +1 artırır
+        const r = await fetch('/odunc/' + islemId + '/iade', { method: 'PATCH' });
+
+        if (r.ok) {
+            // İade başarılı → satırı sayfayı yenilemeden DOM'dan kaldır
+            // opacity:0 → görünmez yapar ama yer kaplamaya devam eder
+            // setTimeout + .remove() → animasyon (0.4s) bittikten sonra DOM'dan tamamen çıkar
+            const satir = document.getElementById('satir-' + islemId);
+            satir.style.transition = 'opacity 0.4s ease';
+            satir.style.opacity = '0';
+            setTimeout(function() {
+                satir.remove();
+                // Tablo boşaldıysa bilgi mesajı göster
+                const govde = document.getElementById('tablo-govde');
+                if (govde.children.length === 0) {
+                    document.getElementById('odunc-tablosu').style.display = 'none';
+                    document.getElementById('bos-mesaj').style.display = 'block';
+                    document.getElementById('sayac').textContent = '';
+                } else {
+                    document.getElementById('sayac').textContent =
+                        govde.children.length + ' aktif kayıt';
+                }
+            }, 400);
+        } else {
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'İade Al';
+            alert('İade işlemi başarısız.');
+        }
+    }
+
+</script>
+
+</body>
+</html>

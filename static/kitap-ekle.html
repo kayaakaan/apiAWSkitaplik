@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARKHİV — Yeni Kitap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #111010;
+            color: #E8E3DC;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1A1415;
+            border-bottom: 1px solid #3A2C2E;
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: #9B4651;
+        }
+
+        .logo-alt {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: #A8A49E;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+        }
+
+        .geri-btn {
+            background: transparent;
+            border: 1px solid #3D1D21;
+            color: #A8A49E;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            padding: 0.45rem 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .geri-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #7D3840;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .geri-btn:hover::before { transform: scaleX(1); }
+        .geri-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .geri-btn span { position: relative; z-index: 1; }
+
+        main {
+            max-width: 720px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            animation: asagiDen 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .sayfa-baslik {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.4rem;
+        }
+
+        .sayfa-cizgi {
+            width: 50px;
+            height: 2px;
+            background: #7D3840;
+            margin-bottom: 0.6rem;
+        }
+
+        .sayfa-alt {
+            font-size: 0.72rem;
+            color: #A8A49E;
+            letter-spacing: 0.04em;
+            margin-bottom: 3rem;
+        }
+
+        .form-kart {
+            background: #161314;
+            border: 1px solid #2E2224;
+            padding: 2.8rem;
+            position: relative;
+        }
+
+        .form-kart::before,
+        .form-kart::after {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+        }
+        .form-kart::before {
+            top: -1px; right: -1px;
+            border-top: 2px solid #7D3840;
+            border-right: 2px solid #7D3840;
+        }
+        .form-kart::after {
+            bottom: -1px; left: -1px;
+            border-bottom: 2px solid #7D3840;
+            border-left: 2px solid #7D3840;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 2.5rem;
+        }
+
+        .alan {
+            position: relative;
+            margin-bottom: 2.2rem;
+        }
+
+        .alan.tam { grid-column: 1 / -1; }
+
+        .alan label {
+            position: absolute;
+            top: 0.85rem;
+            left: 0;
+            font-size: 0.66rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #A8A49E;
+            pointer-events: none;
+            transition: top 0.25s ease, font-size 0.25s ease, color 0.25s ease;
+        }
+
+        .alan input,
+        .alan textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #2E2224;
+            padding: 0.85rem 0 0.55rem;
+            color: #E8E3DC;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem;
+            outline: none;
+            resize: none;
+            transition: border-color 0.25s ease;
+        }
+
+        .alan textarea {
+            min-height: 70px;
+            padding-top: 1.4rem;
+        }
+
+        .alan input::placeholder,
+        .alan textarea::placeholder { color: transparent; }
+
+        .alan input:focus,
+        .alan input:not(:placeholder-shown),
+        .alan textarea:focus,
+        .alan textarea:not(:placeholder-shown) {
+            border-bottom-color: #9B4651;
+        }
+
+        .alan input:focus ~ label,
+        .alan input:not(:placeholder-shown) ~ label,
+        .alan textarea:focus ~ label,
+        .alan textarea:not(:placeholder-shown) ~ label {
+            top: -0.9rem;
+            font-size: 0.52rem;
+            color: #9B4651;
+        }
+
+        .kayma-cizgi {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 1px;
+            background: #9B4651;
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .alan input:focus ~ .kayma-cizgi,
+        .alan textarea:focus ~ .kayma-cizgi { width: 100%; }
+
+        .zorunlu-degil {
+            position: absolute;
+            top: -0.05rem; right: 0;
+            font-size: 0.52rem;
+            letter-spacing: 0.15em;
+            color: #A8A49E;
+            opacity: 0.4;
+            text-transform: uppercase;
+        }
+
+        .mesaj {
+            display: none;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.8rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            border-left: 2px solid;
+        }
+        .mesaj.hata   { background: rgba(155,70,81,0.08); border-color: #9B4651; color: #C0504D; }
+        .mesaj.basari { background: rgba(90,130,90,0.08); border-color: #5A825A; color: #7AB87A; }
+
+        .kaydet-btn {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid #7D3840;
+            color: #9B4651;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.35s ease, border-color 0.35s ease;
+            margin-top: 0.4rem;
+        }
+        .kaydet-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #7D3840;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .kaydet-btn:hover::before { transform: scaleX(1); }
+        .kaydet-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .kaydet-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .kaydet-btn span { position: relative; z-index: 1; }
+
+        @keyframes asagiDen {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes salla {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo">ARKHİV</div>
+        <div class="logo-alt">Kütüphane Yönetim Sistemi</div>
+    </div>
+    <a href="/" class="geri-btn"><span>&#x2190; Koleksiyona Dön</span></a>
+</header>
+
+<main>
+    <h1 class="sayfa-baslik">Yeni Kitap Ekle</h1>
+    <div class="sayfa-cizgi"></div>
+    <p class="sayfa-alt">Koleksiyona yeni bir kitap kaydı ekle.</p>
+
+    <div class="form-kart">
+
+        <div class="mesaj hata"   id="hataMesaj"></div>
+        <div class="mesaj basari" id="basariMesaj"></div>
+
+        <form id="kitapForm" onsubmit="kitapEkle(event)">
+            <div class="form-grid">
+
+                <div class="alan tam">
+                    <input type="text" id="baslik" placeholder=" " required />
+                    <label for="baslik">Başlık</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan tam">
+                    <input type="text" id="yazar" placeholder=" " required />
+                    <label for="yazar">Yazar</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan">
+                    <input type="text" id="isbn" placeholder=" " required />
+                    <label for="isbn">ISBN</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan">
+                    <span class="zorunlu-degil">isteğe bağlı</span>
+                    <input type="text" id="tur" placeholder=" " />
+                    <label for="tur">Tür</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan">
+                    <span class="zorunlu-degil">isteğe bağlı</span>
+                    <input type="number" id="yayin_yili" placeholder=" " min="1000" max="2099" />
+                    <label for="yayin_yili">Yayın Yılı</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan">
+                    <input type="number" id="adet" placeholder=" " value="1" min="1" required />
+                    <label for="adet">Adet</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+                <div class="alan tam">
+                    <span class="zorunlu-degil">isteğe bağlı</span>
+                    <textarea id="aciklama" placeholder=" " rows="3"></textarea>
+                    <label for="aciklama">Açıklama</label>
+                    <div class="kayma-cizgi"></div>
+                </div>
+
+            </div>
+
+            <button type="submit" class="kaydet-btn" id="kaydetBtn">
+                <span>Kitabı Kaydet →</span>
+            </button>
+        </form>
+
+    </div>
+</main>
+
+<script>
+    async function kitapEkle(e) {
+        e.preventDefault();
+
+        const hata   = document.getElementById('hataMesaj');
+        const basari = document.getElementById('basariMesaj');
+        const btn    = document.getElementById('kaydetBtn');
+
+        hata.style.display   = 'none';
+        basari.style.display = 'none';
+        btn.disabled = true;
+        btn.querySelector('span').textContent = 'Kaydediliyor...';
+
+        // Değişkene alıp kontrol ediyoruz → boşsa parseIn null gönder
+        // parseInt('') → NaN döner, FastAPI NaN'a 422 hatası verir
+        // Bu yüzden önce boş mu diye bakmalıyız
+        const yayin_yili_val = document.getElementById('yayin_yili').value;
+        const veri = {
+            baslik:     document.getElementById('baslik').value.trim(),
+            yazar:      document.getElementById('yazar').value.trim(),
+            isbn:       document.getElementById('isbn').value.trim(),
+            tur:        document.getElementById('tur').value.trim() || null,
+            yayin_yili: yayin_yili_val ? parseInt(yayin_yili_val) : null,
+            // parseInt ile string → tam sayıya çevir; boşsa 1 varsay (DB default'u ile örtüşsün)
+            adet:       parseInt(document.getElementById('adet').value) || 1,
+            aciklama:   document.getElementById('aciklama').value.trim() || null
+        };
+
+        try {
+            const r = await fetch('/kitaplar/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(veri)
+            });
+
+            const sonuc = await r.json();
+
+            if (r.ok) {
+                basari.textContent = `"${sonuc.baslik}" başarıyla koleksiyona eklendi. (ID: ${sonuc.id})`;
+                basari.style.display = 'block';
+                document.getElementById('kitapForm').reset();
+            } else {
+                hata.textContent = sonuc.detail || 'Kayıt başarısız.';
+                hata.style.display = 'block';
+                // Animasyonu reflow ile sıfırla → aynı eleman tekrar sallansın
+                // (tarayıcı aynı animasyonu tekrar uygulamaz, reflow zorunlu)
+                hata.style.animation = 'none';
+                void hata.offsetWidth;  // reflow tetiklenir
+                hata.style.animation = 'salla 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
+            }
+        } catch {
+            hata.textContent = 'Sunucuya ulaşılamadı.';
+            hata.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'Kitabı Kaydet →';
+        }
+    }
+</script>
+
+</body>
+</html>

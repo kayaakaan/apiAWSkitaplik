@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARKHİV — Kütüphane</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #111010;
+            color: #E8E3DC;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1A1415;
+            border-bottom: 1px solid #3A2C2E;
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: #9B4651;
+        }
+
+        .logo-alt {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: #A8A49E;
+            text-transform: uppercase;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .sayfa-baslik {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.4rem;
+        }
+
+        .sayfa-cizgi {
+            width: 50px;
+            height: 2px;
+            background: #7D3840;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead tr {
+            border-bottom: 1px solid #3A2C2E;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #A8A49E;
+            font-weight: 400;
+        }
+
+        td {
+            padding: 1rem 1rem;
+            border-bottom: 1px solid rgba(58,44,46,0.4);
+            color: #E8E3DC;
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(125,56,64,0.06);
+        }
+
+        .cikis-btn {
+            background: transparent;
+            border: 1px solid #3D1D21;
+            color: #A8A49E;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            padding: 0.45rem 1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .cikis-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #7D3840;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cikis-btn:hover::before { transform: scaleX(1); }
+        .cikis-btn:hover { color: #E8E3DC; border-color: #9B4651; }
+        .cikis-btn span { position: relative; z-index: 1; }
+
+        .tur-etiket {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            border: 1px solid #3D1D21;
+            background: rgba(125,56,64,0.15);
+            color: #9B4651;
+            border-radius: 2px;
+        }
+
+        .adet {
+            font-weight: 500;
+            color: #9B4651;
+        }
+
+        #yukleniyor {
+            text-align: center;
+            padding: 4rem;
+            color: #A8A49E;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+        }
+
+        #hata-mesaji {
+            text-align: center;
+            padding: 2rem;
+            color: #C0504D;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo">ARKHİV</div>
+        <div class="logo-alt">Kütüphane Yönetim Sistemi</div>
+    </div>
+    <div style="display:flex;gap:0.75rem;align-items:center">
+        <a href="/odunc" class="cikis-btn"><span>&#x21C4; Ödünç</span></a>
+        <a href="/kitap-ekle" class="cikis-btn"><span>+ Yeni Kitap</span></a>
+        <a href="/uye-ekle" class="cikis-btn"><span>+ Yeni Üye</span></a>
+        <button class="cikis-btn" onclick="cikisYap()"><span>Çıkış Yap &#x2192;</span></button>
+    </div>
+</header>
+
+<main>
+    <h1 class="sayfa-baslik">Kitap Koleksiyonu</h1>
+    <div class="sayfa-cizgi"></div>
+
+    <div id="yukleniyor">Kitaplar yükleniyor...</div>
+    <div id="hata-mesaji">Kitaplar yüklenemedi. Sunucu çalışıyor mu?</div>
+
+    <table id="kitap-tablosu" style="display:none">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Başlık</th>
+                <th>Yazar</th>
+                <th>Tür</th>
+                <th>Yayın Yılı</th>
+                <th>Adet</th>
+            </tr>
+        </thead>
+        <tbody id="tablo-govde">
+            <!-- Kitaplar buraya JS ile eklenecek -->
+        </tbody>
+    </table>
+</main>
+
+<script>
+
+    // ── ÇIKIŞ BUTONU ──────────────────────────────────────────────────────────
+    // Butona basıldığında kullanıcıyı giriş sayfasına yönlendirir
+    function cikisYap() {
+        window.location.href = '/giris';
+    }
+
+
+    // ── KİTAPLARI API'DEN ÇEK VE TABLOYA YAZ ────────────────────────────────
+
+    // ADIM 1: Tarayıcı FastAPI'ye GET isteği atar
+    // fetch() → tarayıcının yerleşik HTTP istek fonksiyonu
+    // '/kitaplar/' → FastAPI'deki @router.get("/") endpoint'ine gider
+    // Bu endpoint veritabanından SELECT * FROM kitaplar çalıştırır ve JSON döner
+    fetch('/kitaplar/')
+
+        // ADIM 2: Sunucudan gelen ham cevabı JSON formatına çevir
+        // cevap.json() → gelen metni JavaScript nesnesine/dizisine dönüştürür
+        // Örnek sonuç: [{ id:1, baslik:"Suç ve Ceza", yazar:"Dostoyevski", ... }, ...]
+        .then(function(cevap) {
+            return cevap.json()
+        })
+
+        // ADIM 3: Gelen kitap dizisini tabloya satır satır yaz
+        // kitaplar → JSON'dan gelen dizi, her eleman bir kitap nesnesi
+        .then(function(kitaplar) {
+
+            // Sayfa ilk açıldığında "Kitaplar yükleniyor..." yazısı görünür
+            // Veriler gelince bu yazıyı gizliyoruz
+            document.getElementById('yukleniyor').style.display = 'none'
+
+            // Gizli olan tabloyu artık gösteriyoruz
+            document.getElementById('kitap-tablosu').style.display = 'table'
+
+            // Tablonun <tbody> kısmını seçiyoruz (satırları buraya ekleyeceğiz)
+            var govde = document.getElementById('tablo-govde')
+
+            // Dizideki her kitap için bir <tr> (tablo satırı) oluştur
+            // kitap.baslik, kitap.yazar gibi alanlar → API'nin döndürdüğü JSON anahtarları
+            // Bu anahtarlar schemas.py'deki KitapResponse sınıfından geliyor
+            kitaplar.forEach(function(kitap) {
+                govde.innerHTML += '<tr>' +
+                    '<td>' + kitap.id         + '</td>' +   // Veritabanı ID'si
+                    '<td>' + kitap.baslik      + '</td>' +   // Kitap başlığı
+                    '<td>' + kitap.yazar       + '</td>' +   // Yazar adı
+                    '<td>' + kitap.tur         + '</td>' +   // Kitap türü
+                    '<td>' + kitap.yayin_yili  + '</td>' +   // Yayın yılı
+                    '<td>' + kitap.adet        + '</td>' +   // Mevcut adet
+                '</tr>'
+            })
+
+        })
+
+        // ADIM 4: İstek başarısız olursa (sunucu kapalı, ağ hatası vb.)
+        // .catch() → .then() zincirinde herhangi bir hata olduğunda buraya düşer
+        .catch(function(hata) {
+            document.getElementById('yukleniyor').style.display = 'none'
+            document.getElementById('hata-mesaji').style.display = 'block'
+        })
+
+</script>
+
+</body>
+</html>
