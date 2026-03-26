@@ -1,9 +1,8 @@
 venv/
+.env
 __pycache__/
 *.pyc
-.env
 nohup.out
 log.txt
-*.db
 .nav
 .nev
